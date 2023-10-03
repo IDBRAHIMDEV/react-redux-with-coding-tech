@@ -9,14 +9,23 @@ const initialState = {
     ]
 }
 
+
 const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
+        persistProduct: (state, action) => {
+            state.products.unshift(action.payload)
+        },
+        updateProduct: (state, action) => {},
+        deleteProduct: (state, action) => {
+            state.products = state.products.filter(product => product.id !== action.payload)
+        }
     }
 })
 
-export const { setTitle } = productSlice.actions
+
+export const { persistProduct, updateProduct, deleteProduct } = productSlice.actions
 
 export default productSlice.reducer
 

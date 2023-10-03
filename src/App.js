@@ -1,10 +1,12 @@
 import './App.css';
-import ProductList from './components/product/ProductList';
+import Shop from './pages/Shop';
 
 function App() {
   return (
     <>
-      <ProductList />
+    <div className="container">
+      <Shop />
+    </div>
     </>
   );
 }
