@@ -1,17 +1,28 @@
 import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { persistProduct } from "../../store/features/product/productSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { persistProduct, updateProduct } from "../../store/features/product/productSlice"
 
 const ProductForm = () => {
 
+  const { product, edit } = useSelector(state => state.product)
+
   const dispatch = useDispatch()
 
-  const [title, setTitle] = useState('')
-  const [price, setPrice] = useState(0)
+  const [title, setTitle] = useState()
+  const [price, setPrice] = useState()
 
   const submit = (e) => {
     e.preventDefault()
-    dispatch(persistProduct({title, price}))
+
+    const data = { title, price }
+
+    if(edit) {
+      dispatch(updateProduct(data))
+    }else {
+
+      dispatch(persistProduct(data))
+    }
+
     setTitle('')
     setPrice(0)
   }
@@ -33,7 +44,7 @@ const ProductForm = () => {
               <label htmlFor="title">Title</label>
               <input 
                 onChange={ (e) => setTitle(e.target.value) } 
-                value={title} 
+                value={title || product.title} 
                 type="text" 
                 id="title" 
                 className="form-control" />
@@ -42,14 +53,16 @@ const ProductForm = () => {
               <label htmlFor="price">Price</label>
               <input 
                 onChange={ (e) => setPrice(e.target.value) } 
-                value={price} 
+                value={price || product.price} 
                 type="number" 
                 name="title" 
                 id="price" 
                 className="form-control" />
             </div>
             <div className="d-grid my-3">
-              <button className="btn btn-success">Add a product</button>
+              {edit && (<button className="btn btn-warning">Update a product</button>)}
+              {!edit && (<button className="btn btn-success">Add a product</button>)}
+              
             </div>
           </form>
         </div>
