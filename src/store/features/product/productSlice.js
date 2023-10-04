@@ -1,6 +1,6 @@
 
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+import { getAllProducts, storeProduct, destroyProduct, modifyProduct } from "./productActions"
 
 const initialState = {
     errorMessage: '',
@@ -17,17 +17,6 @@ const initialState = {
         {id: 3, title: 'Vivo Sx 25', price: 34},
     ]
 }
-
-export const getAllProducts = createAsyncThunk('product/getAllProducts', async () => {
-    
-    try {
-        const {data} = await axios.get('https://dummyjson.com/products')
-        return data.products
-        
-    } catch (error) {
-       return error.message
-    }
-})
 
 
 const productSlice = createSlice({
@@ -78,12 +67,63 @@ const productSlice = createSlice({
         [getAllProducts.rejected]: (state, action) => {
             state.isLoading = false
             state.errorMessage = action.payload
+        },
+        [storeProduct.pending]: (state) => {
+            state.isLoading = true
+        },
+        [storeProduct.fulfilled]: (state, action) => {
+            console.log(action)
+            state.isLoading = false
+            state.products.unshift(action.payload)
+            state.product = {
+                id: 0,
+                title: '',
+                price: 0
+            }
+        },
+        [storeProduct.rejected]: (state, action) => {
+            state.isLoading = false
+            state.errorMessage = action.payload
+        }
+        ,
+        [destroyProduct.pending]: (state) => {
+            state.isLoading = true
+        },
+        [destroyProduct.fulfilled]: (state, action) => {
+           
+            state.isLoading = false
+            state.products = state.products.filter((product) => product.id !== action.payload)
+        
+        },
+        [destroyProduct.rejected]: (state, action) => {
+            state.isLoading = false
+            state.errorMessage = action.payload
+        },
+        [modifyProduct.pending]: (state) => {
+            state.isLoading = true
+        },
+        [modifyProduct.fulfilled]: (state, {payload}) => {
+            console.log('payload: ', payload)
+            state.isLoading = false
+        
+            state.products = state.products.map(product => product.id === payload.id ? payload : product)
+            state.edit = false
+            state.product = {
+                id: 0,
+                title: '',
+                price: 0
+            }
+        
+        },
+        [modifyProduct.rejected]: (state, action) => {
+            state.isLoading = false
+            state.errorMessage = action.payload
         }
     }
 })
 
 
-export const { persistProduct, updateProduct, deleteProduct, editProduct, setProduct } = productSlice.actions
+export const { updateProduct, deleteProduct, editProduct, setProduct } = productSlice.actions
 
 export default productSlice.reducer
 

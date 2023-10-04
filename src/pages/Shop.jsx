@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux' 
 import ProductList from '../components/product/ProductList'
 import ProductForm from '../components/product/ProductForm'
-import { getAllProducts } from '../store/features/product/productSlice'
+import { getAllProducts } from '../store/features/product/productActions'
 
 const Shop = () => {
 

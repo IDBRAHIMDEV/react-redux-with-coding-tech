@@ -21,7 +21,7 @@ const ProductList = () => {
       <tbody>
         {products.map(product => (
           <tr key={product.id}>
-            <td><img width="100px" src={product.thumbnail} alt={product.title} /></td>
+            <td><img width="100px" src={product.thumbnail || ''} alt={product.title} /></td>
             <td>{ product.title }</td>
             <td>{ product.price }</td>
             <td className="text-end">

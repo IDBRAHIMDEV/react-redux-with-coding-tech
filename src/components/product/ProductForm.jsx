@@ -1,6 +1,7 @@
-import { useState } from "react"
+
 import { useDispatch, useSelector } from "react-redux"
-import { persistProduct, updateProduct, setProduct } from "../../store/features/product/productSlice"
+import { setProduct } from "../../store/features/product/productSlice"
+import { storeProduct, modifyProduct } from "../../store/features/product/productActions"
 
 const ProductForm = () => {
 
@@ -13,10 +14,13 @@ const ProductForm = () => {
     e.preventDefault()
 
     if(edit) {
-      dispatch(updateProduct(product))
+      dispatch(modifyProduct(product))
     }else {
 
-      dispatch(persistProduct(product))
+      dispatch({
+        type: "product/persistProduct",
+        payload: product
+      })
     }
 
   }
