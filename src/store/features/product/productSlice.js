@@ -1,7 +1,10 @@
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
+    errorMessage: '',
+    isLoading: false,
     edit: false,
     product: {
         id: 0,
@@ -15,17 +18,36 @@ const initialState = {
     ]
 }
 
+export const getAllProducts = createAsyncThunk('product/getAllProducts', async () => {
+    
+    try {
+        const {data} = await axios.get('https://dummyjson.com/products')
+        return data.products
+        
+    } catch (error) {
+       return error.message
+    }
+})
+
 
 const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
+        setProduct: (state, {payload: {name, value}}) => {
+            state.product[name] = value
+        },
         editProduct: (state, action) => {
             state.edit = true
             state.product = action.payload
         },
         persistProduct: (state, action) => {
             state.products.unshift(action.payload)
+            state.product = {
+                id: 0,
+                title: '',
+                price: 0
+            }
         },
         updateProduct: (state, action) => {
             let item = {
@@ -43,11 +65,25 @@ const productSlice = createSlice({
         deleteProduct: (state, action) => {
             state.products = state.products.filter(product => product.id !== action.payload)
         }
+    },
+    extraReducers: {
+        [getAllProducts.pending]: (state) => {
+            state.isLoading = true
+        },
+        [getAllProducts.fulfilled]: (state, action) => {
+            console.log(action)
+            state.isLoading = false
+            state.products = action.payload
+        },
+        [getAllProducts.rejected]: (state, action) => {
+            state.isLoading = false
+            state.errorMessage = action.payload
+        }
     }
 })
 
 
-export const { persistProduct, updateProduct, deleteProduct, editProduct } = productSlice.actions
+export const { persistProduct, updateProduct, deleteProduct, editProduct, setProduct } = productSlice.actions
 
 export default productSlice.reducer
 

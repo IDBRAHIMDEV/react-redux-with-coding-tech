@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { persistProduct, updateProduct } from "../../store/features/product/productSlice"
+import { persistProduct, updateProduct, setProduct } from "../../store/features/product/productSlice"
 
 const ProductForm = () => {
 
@@ -8,23 +8,17 @@ const ProductForm = () => {
 
   const dispatch = useDispatch()
 
-  const [title, setTitle] = useState()
-  const [price, setPrice] = useState()
 
   const submit = (e) => {
     e.preventDefault()
 
-    const data = { title, price }
-
     if(edit) {
-      dispatch(updateProduct(data))
+      dispatch(updateProduct(product))
     }else {
 
-      dispatch(persistProduct(data))
+      dispatch(persistProduct(product))
     }
 
-    setTitle('')
-    setPrice(0)
   }
 
   return (
@@ -43,8 +37,12 @@ const ProductForm = () => {
             <div className="form-group my-3">
               <label htmlFor="title">Title</label>
               <input 
-                onChange={ (e) => setTitle(e.target.value) } 
-                value={title || product.title} 
+                onChange={ ({ target: { name, value} }) => dispatch(setProduct({
+                  name,
+                  value
+                })) } 
+                value={product.title}
+                name="title" 
                 type="text" 
                 id="title" 
                 className="form-control" />
@@ -52,10 +50,13 @@ const ProductForm = () => {
             <div className="form-group my-3">
               <label htmlFor="price">Price</label>
               <input 
-                onChange={ (e) => setPrice(e.target.value) } 
-                value={price || product.price} 
+                onChange={ ({ target: {name, value}}) => dispatch(setProduct({
+                  name,
+                  value
+                })) } 
+                value={product.price} 
                 type="number" 
-                name="title" 
+                name="price" 
                 id="price" 
                 className="form-control" />
             </div>
