@@ -1,7 +1,19 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useSelector , useDispatch} from 'react-redux'
+import { logout } from '../../store/features/user/authSlice'
 
 const Navbar = () => {
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { token, infoUser } = useSelector(state => state.auth)
+
+  const signout = () => {
+    dispatch(logout())
+    navigate('/login')
+  }
+
   return (
     <>
      <nav className="navbar navbar-expand-sm navbar-dark bg-primary">
@@ -26,9 +38,23 @@ const Navbar = () => {
           </ul>
 
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <NavLink to="/login" className="nav-link">Login</NavLink>
-            </li>
+            { token && (
+              <>
+                <li className="nav-item">
+                  <NavLink to="/login" className="nav-link"></NavLink>
+                </li>
+                <li className="nav-item">
+                  <button className="nav-link" onClick={signout}>Logout</button>
+                </li>
+              </>
+            ) }
+            
+            { !token && (
+
+              <li className="nav-item">
+                <NavLink to="/login" className="nav-link">Login</NavLink>
+              </li>
+            )}
           </ul>
           
         </div>

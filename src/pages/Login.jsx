@@ -1,8 +1,13 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { authLogin } from '../store/features/user/authActions';
 
 const Login = () => {
+
+    const { token, error, isLoading } = useSelector(state => state.auth)
+
+    const navigate = useNavigate()
 
     const dispatch = useDispatch()
 
@@ -17,7 +22,15 @@ const Login = () => {
         const password = passwordRef.current.value
 
         dispatch(authLogin({ username, password }))
+    
+
     }
+
+    useEffect(() => {
+        if(token) {
+            navigate('/')
+        }
+    }, [token, navigate])
 
   return (
     <>
@@ -30,6 +43,13 @@ const Login = () => {
         </div>
         <div className="row my-5">
             <div className="col-md-4 mx-auto bg-light p-4">
+                
+                {error && (
+                    <div class="alert alert-danger my-5" role="alert">
+                        <strong>Error auth</strong> { error }
+                    </div>
+                )}
+
                 <form onSubmit={submit}>
                     <div className="form-group my-3">
                         <label htmlFor="username">Username</label>
@@ -40,7 +60,7 @@ const Login = () => {
                         <input ref={passwordRef} type="password" id="password" className="form-control" />
                     </div>
                     <div className="d-grid my-2">
-                        <button className="btn btn-primary">Login</button>
+                        <button disabled={isLoading} className="btn btn-primary">Login</button>
                     </div>
                 </form>
             </div>
