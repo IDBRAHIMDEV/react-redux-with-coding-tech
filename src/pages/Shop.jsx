@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux' 
+import { useDispatch, useSelector } from 'react-redux' 
 import ProductList from '../components/product/ProductList'
 import ProductForm from '../components/product/ProductForm'
 import { getAllProducts } from '../store/features/product/productActions'
 
 const Shop = () => {
 
+  const { token } = useSelector(state => state.auth)
+
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getAllProducts())
+    dispatch(getAllProducts(token))
   }, [])
 
   return (
