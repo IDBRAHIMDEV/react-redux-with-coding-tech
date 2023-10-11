@@ -7,6 +7,7 @@ import { getAllProducts } from '../store/features/product/productActions'
 const Shop = () => {
 
   const { token } = useSelector(state => state.auth)
+  const { error } = useSelector(state => state.product)
 
   const dispatch = useDispatch()
 
@@ -16,6 +17,13 @@ const Shop = () => {
 
   return (
     <>
+
+        {error && (
+                    <div class="alert alert-danger my-5" role="alert">
+                        <strong>Error product</strong> { error }
+                    </div>
+                )}
+
       <ProductForm />
       <hr />
       <div className="row my-4">

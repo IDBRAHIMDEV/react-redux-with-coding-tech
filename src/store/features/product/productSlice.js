@@ -1,9 +1,9 @@
-
+import lodash from 'lodash'
 import { createSlice } from "@reduxjs/toolkit";
 import { getAllProducts, storeProduct, destroyProduct, modifyProduct } from "./productActions"
 
 const initialState = {
-    errorMessage: '',
+    error: '',
     isLoading: false,
     edit: false,
     product: {
@@ -11,11 +11,7 @@ const initialState = {
         title: '',
         price: 0
     },
-    products: [
-        {id: 1, title: 'Iphone 15 Pro max', price: 2340},
-        {id: 2, title: 'Samsung S23 Ultra', price: 231},
-        {id: 3, title: 'Vivo Sx 25', price: 34},
-    ]
+    products: []
 }
 
 
@@ -58,15 +54,25 @@ const productSlice = createSlice({
     extraReducers: {
         [getAllProducts.pending]: (state) => {
             state.isLoading = true
+            state.error = ''
         },
         [getAllProducts.fulfilled]: (state, action) => {
             console.log(action)
             state.isLoading = false
-            state.products = action.payload
+
+            if(lodash.isArray(action.payload)) {
+                state.products = action.payload
+            }
+
+            if(lodash.isString(action.payload)) {
+                state.error = action.payload
+            }
         },
         [getAllProducts.rejected]: (state, action) => {
             state.isLoading = false
-            state.errorMessage = action.payload
+            state.errorMessage = action.error.message
+            state.products = []
+
         },
         [storeProduct.pending]: (state) => {
             state.isLoading = true

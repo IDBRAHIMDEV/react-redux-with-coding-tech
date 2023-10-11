@@ -19,7 +19,7 @@ const ProductList = () => {
         </tr>
       </thead>
       <tbody>
-        {products && products.map(product => (
+        {products.length && products.map(product => (
           <tr key={product.id}>
             <td><img width="100px" src={product.thumbnail || ''} alt={product.title} /></td>
             <td>{ product.title }</td>
